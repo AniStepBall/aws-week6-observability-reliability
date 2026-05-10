@@ -39,13 +39,37 @@ count, response time, healthy host count, and 5XX error rate.
 ### CPU Stress Test
 Simulated high CPU by running a bash loop across multiple SSH sessions.
 
-Result: CPUUtilization exceeded 70% threshold → alarm entered ALARM
-state → SNS email received within 2 minutes.
-
-### Instance Termination Test
-Terminated one EC2 instance from the Auto Scaling Group.
-
-Result: Target became unhealthy → ASG launched a replacement → ALB
-continued routing traffic to the remaining healthy target throughout.
+Result: CPUUtilization exceeded 70% threshold → alarm entered ALARM state → SNS email received within a few minutes.
 
 ![Alarm History](screenshots/alarm-history.png)
+
+---
+
+## Future Improvements
+
+- CloudWatch Agent for OS-level and application log shipping
+- Log metric filters to alert on error patterns in logs
+- Composite alarms to reduce alert noise
+- Automated remediation via Lambda on alarm state change
+- Distributed tracing with AWS X-Ray
+- Centralised structured logging
+- Anomaly detection alarms instead of static thresholds
+
+---
+
+## Repository Structure
+```aws-week6-observability-reliability/
+├── README.md
+├── docs/
+│   ├── runbooks/
+│   │   ├── high-cpu-runbook.md
+│   │   ├── unhealthy-targets-runbook.md
+│   │   └── status-check-failure-runbook.md
+│   ├── incident-reports/
+│   │   └── cpu-alarm-test.md
+│   └── architecture-diagram.png
+└── screenshots/
+├── cloudwatch-dashboard.png
+├── cpu-alarm.png
+└── alarm-history.png
+```
