@@ -82,7 +82,8 @@ A post-incident style writeup for the CPU stress test is documented at:
 ---
 
 ## Repository Structure
-```aws-week6-observability-reliability/
+```
+aws-week6-observability-reliability/
 ├── README.md
 ├── docs/
 │   ├── runbooks/
