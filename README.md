@@ -20,6 +20,24 @@ Move beyond deployment and demonstrate how cloud systems can be monitored, diagn
 ---
 
 ## Metrics Monitored
+| Metric | Source | Purpose |
+|---|---|---|
+| CPUUtilization | EC2 | Detect workload pressure |
+| StatusCheckFailed | EC2 | Detect infrastructure-level failures |
+| NetworkIn / NetworkOut | EC2 | Detect unusual traffic patterns |
+
+---
+
+## Alarms Configured
+
+| Alarm | Metric | Threshold | Period | Action |
+|---|---|---|---|---|
+| week6-high-cpu-alarm | CPUUtilization | > 70% | 5 minutes | SNS email |
+| week6-status-check-failed | StatusCheckFailed | > 0 | 1 minute | SNS email |
+
+### Why 70% CPU?
+70% was chosen to provide headroom before the instance becomes saturated, giving time to investigate before performance degrades.
+A threshold of 20% would generate constant false positives under normal load.
 
 ---
 
@@ -29,8 +47,7 @@ Move beyond deployment and demonstrate how cloud systems can be monitored, diagn
 
 Dashboard name: `week6-reliability-dashboard`
 
-Widgets include EC2 CPU, status checks, network I/O, ALB request
-count, response time, healthy host count, and 5XX error rate.
+Widgets include EC2 CPU, status checks and network I/O.
 
 ---
 
@@ -45,15 +62,22 @@ Result: CPUUtilization exceeded 70% threshold → alarm entered ALARM state → 
 
 ---
 
-## Future Improvements
+## Runbooks
 
-- CloudWatch Agent for OS-level and application log shipping
-- Log metric filters to alert on error patterns in logs
-- Composite alarms to reduce alert noise
-- Automated remediation via Lambda on alarm state change
-- Distributed tracing with AWS X-Ray
-- Centralised structured logging
-- Anomaly detection alarms instead of static thresholds
+Runbooks define the response steps when an alarm fires.
+
+| Runbook | Alarm | Location |
+|---|---|---|
+| High CPU | week6-high-cpu-alarm | [docs/runbooks/high-cpu-runbook.md](docs/runbooks/high-cpu-runbook.md) |
+| Status Check Failure | week6-status-check-failed | [docs/runbooks/status-check-failure-runbook.md](docs/runbooks/status-check-failure-runbook.md) |
+
+---
+
+## Incident Report
+
+A post-incident style writeup for the CPU stress test is documented at:
+
+[docs/incident-reports/cpu-alarm-test.md](docs/incident-reports/cpu-alarm-test.md)
 
 ---
 
@@ -73,3 +97,13 @@ Result: CPUUtilization exceeded 70% threshold → alarm entered ALARM state → 
 ├── cpu-alarm.png
 └── alarm-history.png
 ```
+
+---
+
+## Future Improvements
+
+- CloudWatch Agent for OS-level and application log shipping
+- Log metric filters to alert on error patterns in logs
+- Composite alarms to reduce alert noise
+- Automated remediation via Lambda on alarm state change
+- Anomaly detection alarms instead of static thresholds
