@@ -46,6 +46,15 @@ AWS Infrastructure → CloudWatch Metrics → CloudWatch Alarms → SNS Email No
 | SNS | Notification service used for alert delivery |
 | Runbook | Step-by-step operational response guide |
 
+
+| Concept | AWS Example | What It Tells You |
+|---|---|---|
+| Monitoring | CPUUtilization, StatusCheckFailed | Known system signals |
+| Observability | Metrics + logs + runbooks | Ability to diagnose system behavior |
+| Metric | CPUUtilization | Numerical measurement over time |
+| Alarm | CPU > 70% | Threshold-based trigger |
+| Dashboard | CloudWatch dashboard | Visual health overview |
+| SNS | Email notification | Alert delivery mechanism |
 ---
 
 ## Metrics Monitored
@@ -56,7 +65,15 @@ AWS Infrastructure → CloudWatch Metrics → CloudWatch Alarms → SNS Email No
 | NetworkIn / NetworkOut | EC2 | Detect unusual traffic patterns |
 
 ---
+## Health Check Concepts
 
+EC2 status checks monitor infrastructure-level health, such as whether the instance or underlying AWS host has issues.
+
+ALB health checks monitor application-level health by verifying that targets respond successfully along a configured path.
+
+This distinction matters because an EC2 instance can be running even when the application is unhealthy.
+
+---
 ## Alarms Configured
 
 | Alarm | Metric | Threshold | Period | Action |
@@ -161,6 +178,21 @@ aws-week6-observability-reliability/
 ├── cpu-alarm.png
 └── alarm-history.png
 ```
+
+## Planned HA Observability Extension
+This project currently applies observability to the Terraform baseline environment.
+
+The next extension applies the same model to the high-availability architecture using:
+
+| Metric | Source | Purpose |
+|---|---|---|
+| HealthyHostCount | ALB Target Group | Measures backend service availability |
+| RequestCount | ALB | Measures traffic volume |
+| TargetResponseTime | ALB | Measures application latency |
+| HTTPCode_ELB_5XX_Count | ALB | Detects load balancer errors |
+| HTTPCode_Target_5XX_Count | Target Group | Detects application/backend errors |
+
+---
 ## What I Learned
 •	Deployment alone does not make a system reliable 
 •	Metrics help identify system behaviour over time 
@@ -169,5 +201,3 @@ aws-week6-observability-reliability/
 •	Observability is a key part of production readiness
 
 ---
-
-
