@@ -1,21 +1,50 @@
-# AWS Week 6 - Observability and Reliability
+# AWS  - Observability and Reliability
 
 ## About
-This project implements monitoring, alerting, and operational runbooks for AWS infrastructure using CloudWatch and SNS.
+This project implements monitoring, alerting, and operational runbooks for AWS infrastructure using Amazon CloudWatch and SNS.
 
-This observability layer was applied to the Week 5 Terraform-only environment. However, it is better to use Week 2 high-availability since the combination of ALB + ASG systems provides a richer signals, including target health, latency, request count, and auto-recovery behaviour. 
+The initial observability layer is applied to the Terraform-provisioned environment to validate core monitoring concepts on a controlled infrastructure baseline.
 
-Week 6 focuses on operating and monitoring a live multi-component system.
+This project focuses on moving beyond deployment by showing how cloud systems can be monitored, diagnosed, and operated under failure conditions.
+
+A planned extension is to apply the same observability model to the previous high-availability architecture, where ALB and Auto Scaling Group metrics provide richer operational signals such as target health, latency, request count, and auto-recovery behaviour.
 
 ---
 
 ## Objective
-Move beyond deployment and demonstrate how cloud systems can be monitored, diagnosed, and operated under failure conditions.
+Move from:
+
+> “The system is deployed”
+
+to:
+
+> “The system is observable, alertable, and operable.”
+
+This project demonstrates:
+- CloudWatch metrics monitoring
+- Alarm-based failure detection
+- SNS email notifications
+- Operational runbooks
+- Incident-style documentation
+- Failure simulation and validation
 
 ---
 
 ## Architecture
+AWS Infrastructure → CloudWatch Metrics → CloudWatch Alarms → SNS Email Notification → Runbook Response
 ![Architecture Diagram](docs/architecture-diagram.png)
+
+---
+
+## Core Concepts Demonstrated
+
+| Concept | Explanation |
+|---|---|
+| Metric | Numerical system measurement over time |
+| Alarm | Threshold-based trigger on a metric |
+| Dashboard | Visual system health overview |
+| SNS | Notification service used for alert delivery |
+| Runbook | Step-by-step operational response guide |
 
 ---
 
@@ -35,9 +64,17 @@ Move beyond deployment and demonstrate how cloud systems can be monitored, diagn
 | week6-high-cpu-alarm | CPUUtilization | > 70% | 5 minutes | SNS email |
 | week6-status-check-failed | StatusCheckFailed | > 0 | 1 minute | SNS email |
 
+---
 ### Why 70% CPU?
-70% was chosen to provide headroom before the instance becomes saturated, giving time to investigate before performance degrades.
-A threshold of 20% would generate constant false positives under normal load.
+
+A 70% CPU threshold provides early warning before the instance becomes saturated.
+
+A very low threshold, such as 20%, could create excessive false positives under normal workload conditions, contributing to alert fatigue.
+
+This demonstrates the tradeoff between:
+- early detection
+- signal quality
+- alert noise
 
 ---
 
@@ -75,9 +112,35 @@ Runbooks define the response steps when an alarm fires.
 
 ## Incident Report
 
-A post-incident style writeup for the CPU stress test is documented at:
+A post-incident style write-up for the CPU stress test is documented at:
 
 [docs/incident-reports/cpu-alarm-test.md](docs/incident-reports/cpu-alarm-test.md)
+
+---
+
+## Design Decisions and Tradeoffs
+CloudWatch and SNS
+CloudWatch and SNS were used because they are native AWS services and integrate directly with EC2 metrics and alarm workflows.
+Tradeoff:
+This provides strong baseline monitoring, but does not yet include centralised application logs, distributed tracing, or advanced observability tooling.
+
+---
+## Static Thresholds
+Static thresholds were used for simplicity and clarity.
+
+Tradeoff:
+Static alarms are easy to understand, but they may create false positives or miss unusual patterns that anomaly detection could identify.
+
+---
+
+## Production Improvements
+Future improvements include:
+•	CloudWatch Agent for OS-level and application log shipping 
+•	Log metric filters to alert on error patterns in logs 
+•	Composite alarms to reduce alert noise 
+•	Automated remediation via Lambda on alarm state change 
+•	CloudWatch anomaly detection instead of static thresholds 
+•	ALB and Auto Scaling Group monitoring for richer service-level signals 
 
 ---
 
@@ -98,13 +161,13 @@ aws-week6-observability-reliability/
 ├── cpu-alarm.png
 └── alarm-history.png
 ```
+## What I Learned
+•	Deployment alone does not make a system reliable 
+•	Metrics help identify system behaviour over time 
+•	Alarms must be tuned to balance early detection and alert noise 
+•	Runbooks turn alerts into actionable operational responses 
+•	Observability is a key part of production readiness
 
 ---
 
-## Future Improvements
 
-- CloudWatch Agent for OS-level and application log shipping
-- Log metric filters to alert on error patterns in logs
-- Composite alarms to reduce alert noise
-- Automated remediation via Lambda on alarm state change
-- Anomaly detection alarms instead of static thresholds
