@@ -149,7 +149,22 @@ Tradeoff:
 Static alarms are easy to understand, but they may create false positives or miss unusual patterns that anomaly detection could identify.
 
 ---
+## AI / Automation Extension
 
+To connect cloud operations with my AI/ML background, this project includes a lightweight incident assistant that converts monitoring alerts into structured operational summaries.
+
+Input:
+CloudWatch-style alarm event
+
+Output:
+- incident summary
+- likely impact
+- first checks
+- recommended response steps
+
+This demonstrates how AI and automation can support cloud operations by reducing time-to-triage and improving response consistency.
+
+---
 ## Production Improvements
 Future improvements include:
 •	CloudWatch Agent for OS-level and application log shipping 
